@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "id": "permanent_status_effect",
+  "version": "${version}",
+  "name": "Permanent Status Effect",
+  "description": "把玩家物品栏中的药水和食物提供的状态效果的时长全部加起来，如果有大于等于3小时的状态效果，则给予无限时长的对应效果。",
+  "authors": [
+    "Phoupraw"
+  ],
+  "contact": {
+    "homepage": "https://www.mcmod.cn/class/TODO.html",
+    "issues": "https://www.mcmod.cn/class/TODO.html"
+  },
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "phoupraw.mcmod.permanent_status_effect.PSE"
+      }
+    ],
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "phoupraw.mcmod.permanent_status_effect.PSEModMenuApi"
+      }
+    ]
+  },
+  "environment": "*",
+  "depends": {
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*",
+    "yet_another_config_lib_v3": "*"
+  },
+  "recommends": {
+    "modmenu": "*"
+  },
+  "suggests": {
+    "travelersbackpack": "*"
+  },
+  "mixins": ["permanent_status_effect.mixins.json"],
+  "icon": "assets/permanent_status_effect/icon.png",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "_modmenu.modrinth": "TODO",
+        "_modmenu.curseforge": "TODO"
+      }
+    }
+  },
+  "license": "MPL-2.0"
+}

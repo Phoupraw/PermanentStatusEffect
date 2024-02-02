@@ -1,0 +1,5 @@
+<root>
+    <item name='net.minecraft.nbt.NbtCompound net.minecraft.nbt.NbtCompound copyFrom(net.minecraft.nbt.NbtCompound) 0'>
+        <annotation name='org.jetbrains.annotations.NotNull'/>
+    </item>
+</root>

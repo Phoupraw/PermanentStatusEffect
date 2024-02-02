@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "phoupraw.mcmod.permanent_status_effect.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["ASimpleInventory", "AStatusEffectInstance", "MItems", "MPotionItem", "MSimpleOptionFactory", "MSuspiciousStewItem"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
