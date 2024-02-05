@@ -1,6 +1,6 @@
 {
   "modmenu.nameTranslation.permanent_status_effect": "永久状态效果",
-  "modmenu.descriptionTranslation.permanent_status_effect": "## 概要\n- 在生存中获得无限时长状态效果。\n- 调节药水的堆叠上限。## 介绍\n把玩家物品栏中的药水和食物提供的状态效果的时长全部加起来，如果有大于等于1小时的状态效果，则给予无限时长的对应效果。\n如果食物并非一定提供状态效果，则计算其期望（概率×时长）。\n可以配置时长阈值。\n支持末影箱、旅行者背包（必须要穿戴）、潜影盒和《扩展炼药》的药水袋（带在身上即可）。\n使用指令`/permanent_status_effect enable|disable <状态效果ID>`可以为自己禁用或启用某个特定的永久状态效果。\n如果状态效果太多导致GUI很难看，可以安装《Stylish Effects》（https://www.mcmod.cn/class/5784.html）让GUI更紧凑。",
+  "modmenu.descriptionTranslation.permanent_status_effect": "§l概要§r\n- 在生存中获得无限时长状态效果。\n- 调节药水的堆叠上限。\n§l简介§r\n把玩家物品栏中的药水和食物提供的状态效果的时长全部加起来，如果有大于等于1小时的状态效果，则给予无限时长的对应效果。如果食物是有概率提供状态效果，则计算其期望（概率×时长）。可以配置时长阈值。\n支持末影箱、旅行者背包（必须要穿戴）、潜影盒和《扩展炼药》的药水袋（带在身上即可）。\n使用指令`/permanent_status_effect enable|disable <状态效果ID>`可以为自己禁用或启用某个特定的永久状态效果。",
 
   "yacl3.config.permanent_status_effect:config.category.common": "双端设置",
 
