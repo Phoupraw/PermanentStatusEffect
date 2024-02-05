@@ -8,8 +8,8 @@
     "Phoupraw"
   ],
   "contact": {
-    "homepage": "https://www.mcmod.cn/class/TODO.html",
-    "issues": "https://www.mcmod.cn/class/TODO.html"
+    "homepage": "https://www.mcmod.cn/class/13585.html",
+    "TODO_issues": "https://www.mcmod.cn/class/13585.html"
   },
   "entrypoints": {
     "main": [
@@ -27,6 +27,7 @@
   },
   "environment": "*",
   "depends": {
+    "fabricloader": "*",
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
     "yet_another_config_lib_v3": "*"
@@ -42,8 +43,8 @@
   "custom": {
     "modmenu": {
       "links": {
-        "_modmenu.modrinth": "TODO",
-        "_modmenu.curseforge": "TODO"
+        "modmenu.modrinth": "https://modrinth.com/mod/permanent_status_effect",
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/permanent-status-effect"
       }
     }
   },

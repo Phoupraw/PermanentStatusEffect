@@ -11,6 +11,7 @@ import dev.isxander.yacl3.config.v2.api.autogen.ListGroup.ValueFactory
 import net.minecraft.registry.Registries
 
 class PSEConfig {
+    //COMMON
     @AutoGen(category = Categories.COMMON)
     @SerialEntry
     @TickBox
@@ -28,7 +29,7 @@ class PSEConfig {
     @GameRestart
     @JvmField
     var stewMaxStack = 1
-
+    //SERVER
     @AutoGen(category = Categories.SERVER)
     @SerialEntry
     @DoubleField(format = "%.1f")
@@ -61,6 +62,17 @@ class PSEConfig {
     var instant = false
     @AutoGen(category = Categories.SERVER)
     @SerialEntry
+    @Boolean(formatter = Boolean.Formatter.CUSTOM)
+    @JvmField
+    var whitelist = false
+    @AutoGen(category = Categories.SERVER)
+    @SerialEntry
+    @ListGroup(valueFactory = BlacklistFactory::class, controllerFactory = BlacklistFactory::class)
+    @JvmField
+    var blacklist = mutableListOf<String>()
+    //INVENTORIES
+    @AutoGen(category = Categories.SERVER)
+    @SerialEntry
     @TickBox
     @JvmField
     var mainInventory = true
@@ -73,17 +85,17 @@ class PSEConfig {
     @SerialEntry
     @TickBox
     @JvmField
+    var shulkerBox = true
+    @AutoGen(category = Categories.SERVER)
+    @SerialEntry
+    @TickBox
+    @JvmField
     var travelerBackpack = true
     @AutoGen(category = Categories.SERVER)
     @SerialEntry
-    @Boolean(formatter = Boolean.Formatter.CUSTOM)
+    @TickBox
     @JvmField
-    var whitelist = false
-    @AutoGen(category = Categories.SERVER)
-    @SerialEntry
-    @ListGroup(valueFactory = BlacklistFactory::class, controllerFactory = BlacklistFactory::class)
-    @JvmField
-    var blacklist = mutableListOf<String>()
+    var extraAlchemy_potionBag = true
 
     class BlacklistFactory : ValueFactory<String>, ControllerFactory<String> {
         override fun provideNewValue(): String = ""

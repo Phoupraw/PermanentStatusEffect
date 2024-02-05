@@ -32,6 +32,8 @@ import net.minecraft.registry.tag.TagKey
 import net.minecraft.server.command.CommandManager
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import phoupraw.mcmod.linked.minecraft.id
 import phoupraw.mcmod.linked.misc.DefaultedMap
 import phoupraw.mcmod.linked.misc.Fabric
@@ -42,21 +44,13 @@ import phoupraw.mcmod.linked.transfer.item.NbtSimpleInventory
 import phoupraw.mcmod.permanent_status_effect.mixin.AStatusEffectInstance
 import zabi.minecraft.extraalchemy.items.ModItems
 import zabi.minecraft.extraalchemy.items.PotionBagItem
-import kotlin.collections.HashMap
-import kotlin.collections.Iterable
-import kotlin.collections.MutableCollection
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.mapValues
-import kotlin.collections.max
-import kotlin.collections.mutableListOf
-import kotlin.collections.plusAssign
 import kotlin.collections.set
 
 object PSE : ModInitializer {
     const val ID = "permanent_status_effect"
+    val LOGGER: Logger = LogManager.getLogger(ID)
     private inline fun <reified T> config(suffix: String): ConfigClassHandler<T> {
         return ConfigClassHandler.createBuilder(T::class.java)
           .id(Identifier(ID, "config$suffix"))
@@ -69,8 +63,10 @@ object PSE : ModInitializer {
           .build()
           .apply { load() }
     }
+
     @JvmField
     val CONFIG = config<PSEConfig>("")
+
     @JvmField
     val STORAGE = MutableEvent<(entity: LivingEntity, inventory: MutableCollection<ContainerItemContext>) -> Unit> { callbacks ->
         { entity, inventory ->
@@ -79,6 +75,7 @@ object PSE : ModInitializer {
             }
         }
     }
+
     @JvmField
     val EFFECTS = MutableEvent<(context: ContainerItemContext, entity: LivingEntity, stats: DefaultedMap<StatusEffect, DefaultedMap<Int, Double>>) -> Boolean> { callbacks ->
         { context, entity, stats ->
@@ -88,9 +85,11 @@ object PSE : ModInitializer {
             false
         }
     }
+
     fun addEffects(inventory: SlottedStorage<ItemVariant>, entity: LivingEntity, stats: DefaultedMap<StatusEffect, DefaultedMap<Int, Double>>) {
-        addEffects(inventory.nonEmptyViews().map { ContainerItemContext(it) },entity,stats)
+        addEffects(inventory.nonEmptyViews().map { ContainerItemContext(it) }, entity, stats)
     }
+
     fun addEffects(inventory: Iterable<ContainerItemContext>, entity: LivingEntity, stats: DefaultedMap<StatusEffect, DefaultedMap<Int, Double>>) {
         for (slot in inventory) {
             if (slot.empty) continue
@@ -137,16 +136,19 @@ object PSE : ModInitializer {
         }
         EFFECTS.addKeyOrder("blacklist", MutableEvent.DEFAULT_KEY)
         EFFECTS.register { context, entity, stats ->
-            if (context.itemVariant.item !is PotionItem) return@register false
+            if (context.itemVariant.item !is PotionItem)
+                return@register false
             for (instance in PotionUtil.getPotionEffects(context.itemVariant.nbt)) {
                 stats[instance.effectType][instance.amplifier] += if (instance.isInfinite) Double.POSITIVE_INFINITY else instance.duration.toDouble() * context.amount
             }
             false
         }
         EFFECTS.register { context, entity, stats ->
-            if (context.itemVariant.item !is SuspiciousStewItem) return@register false
+            if (context.itemVariant.item !is SuspiciousStewItem)
+                return@register false
             val nbt = context.itemVariant.nbt ?: return@register false
-            if (!nbt.contains("Effects", NbtElement.LIST_TYPE.toInt())) return@register false
+            if (!nbt.contains("Effects", NbtElement.LIST_TYPE.toInt()))
+                return@register false
             val nbtEffects = nbt.getList("Effects", NbtElement.COMPOUND_TYPE.toInt())
             for (nbtEffect in nbtEffects) {
                 if (nbtEffect !is NbtCompound) continue
@@ -165,9 +167,9 @@ object PSE : ModInitializer {
             }
             false
         }
-        EFFECTS.register{context, entity, stats ->
-            if ((context.itemVariant.item as? BlockItem)?.block is ShulkerBoxBlock) {
-                addEffects(InventoryStorage(NbtSimpleInventory(context.itemVariant.copyOrCreateNbt())),entity, stats)
+        EFFECTS.register { context, entity, stats ->
+            if ((context.itemVariant.item as? BlockItem)?.block is ShulkerBoxBlock && CONFIG.instance().shulkerBox) {
+                addEffects(InventoryStorage(NbtSimpleInventory(context.itemVariant.copyOrCreateNbt().getCompound("BlockEntityTag"), 27)), entity, stats)
             }
             false
         }
@@ -213,8 +215,17 @@ object PSE : ModInitializer {
                     }
                 }
                 infs.forEach { (effect, amplifier) ->
-                    entity.addStatusEffect(StatusEffectInstance(effect, StatusEffectInstance.INFINITE, amplifier, CONFIG.instance().ambient, CONFIG.instance().showParticles, CONFIG.instance().showIcon), entity)
-                    entity.addCommandTag("$ID:active/${effect.id}")
+                    entity.addStatusEffect(StatusEffectInstance(
+                      effect,
+                      StatusEffectInstance.INFINITE,
+                      amplifier,
+                      CONFIG.instance().ambient,
+                      CONFIG.instance().showParticles,
+                      CONFIG.instance().showIcon
+                    ), entity)
+                    if (!entity.addCommandTag("$ID:active/${effect.id}")) {
+//                        LOGGER.warn("!entity.addCommandTag(\"$ID:active/${effect.id}\")")
+                    }
                 }
             }
         }
@@ -225,7 +236,7 @@ object PSE : ModInitializer {
                   .executes {
                       val effect = RegistryEntryArgumentType.getStatusEffect(it, "effect").value()
                       val entity = it.source.entity ?: run {
-                          it.source.sendError(Text.translatable("permissions.requires.entity"));
+                          it.source.sendError(Text.translatable("permissions.requires.entity"))
                           return@executes 0
                       }
                       if (!entity.addCommandTag("$ID:disabled/${effect.id}")) {
@@ -241,7 +252,7 @@ object PSE : ModInitializer {
                   .executes {
                       val effect = RegistryEntryArgumentType.getStatusEffect(it, "effect").value()
                       val entity = it.source.entity ?: run {
-                          it.source.sendError(Text.translatable("permissions.requires.entity"));
+                          it.source.sendError(Text.translatable("permissions.requires.entity"))
                           return@executes 0
                       }
                       if (!entity.removeScoreboardTag("$ID:disabled/${effect.id}")) {
@@ -257,16 +268,20 @@ object PSE : ModInitializer {
         if (Fabric.isModLoaded(TravelersBackpack.MODID)) {
             STORAGE.register { entity, storage ->
                 if (!CONFIG.instance().travelerBackpack || entity !is PlayerEntity) return@register
-                ComponentUtils.getBackpackInv(entity)?.combinedInventory?.also {
-                    for (view in InventoryStorage(it).nonEmptyViews()) {
-                        storage += RemainderContainerItemContext(view, entity)
+                try {
+                    ComponentUtils.getBackpackInv(entity)?.combinedInventory?.also {
+                        for (view in InventoryStorage(it).nonEmptyViews()) {
+                            storage += RemainderContainerItemContext(view, entity)
+                        }
                     }
+                } catch (e: NullPointerException) {
+                    LOGGER.catching(e)
                 }
             }
         }
         if (Fabric.isModLoaded("extraalchemy")) {
             EFFECTS.register { context, entity, stats ->
-                if (context.itemVariant.isOf(ModItems.POTION_BAG)) {
+                if (context.itemVariant.isOf(ModItems.POTION_BAG) && CONFIG.instance().extraAlchemy_potionBag) {
                     addEffects(InventoryStorage(PotionBagItem.BagInventory(context.itemVariant.toStack(), null)), entity, stats)
                 }
                 false
