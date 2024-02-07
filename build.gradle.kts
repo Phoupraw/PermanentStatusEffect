@@ -67,6 +67,7 @@ dependencies {
     modApi("dev.isxander.yacl:yet-another-config-lib-fabric:${property("yet_another_config_lib")}")
     modApi("com.terraformersmc:modmenu:${property("modmenu")}")
     compileOnlyApi(annotationProcessor("org.projectlombok:lombok:${property("lombok")}")!!)
+    include(modImplementation("phoupraw.mcmod:PhouprawsLinkedLib:+")!!)
 
     //由于KT自带的与java互操作不太好用，所以我自己写了一个
     modCompileOnlyApi("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}") {

@@ -30,7 +30,8 @@
     "fabricloader": "*",
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
-    "yet_another_config_lib_v3": "*"
+    "yet_another_config_lib_v3": "*",
+    "phoupraws_linked_lib": "*"
   },
   "recommends": {
     "modmenu": "*"
